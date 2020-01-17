@@ -23,7 +23,7 @@ public class MainActivity extends Activity
 					builder.setMessage(getResources().getString(R.string.hi) + firstName.getText().toString() + " " + lastName.getText());
 					AlertDialog alert = builder.create();  
 					//Setting the title manually  
-					alert.setTitle("AlertDialogExample");  
+					alert.setTitle("Special Message");  
 					alert.show();  
 				}
 			});
