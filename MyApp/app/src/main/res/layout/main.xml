@@ -8,8 +8,12 @@
 		android:id="@+id/button1"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Button"/>
-
+		android:text="Speak"/>
+	<Button
+		android:id="@+id/button2"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="Listen"/>
 	<TextView
 		android:id="@+id/textView1"
 		android:layout_width="wrap_content"
