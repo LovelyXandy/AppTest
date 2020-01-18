@@ -23,6 +23,7 @@ public class MainActivity extends Activity
 	int answer;
 	int integer1;
 	int integer2;
+	Intent intent;
 	int maxSize = 20;
 	boolean addition;
 	Random generator = new Random();
@@ -64,8 +65,10 @@ public class MainActivity extends Activity
 		button2.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					if(active){
-					talker.setLanguage(Locale.UK);
-					talker.speak("Thanks for playing! Your score was " + score, TextToSpeech.QUEUE_ADD, null);
+						//intent.cancel();
+				    	talker.stop();
+						talker.setLanguage(Locale.UK);
+						talker.speak("Thanks for playing! Your score was " + score, TextToSpeech.QUEUE_FLUSH, null);
 					active = false;
 					score = 0;
 					addScore =1;
@@ -118,7 +121,7 @@ public class MainActivity extends Activity
 	
 	// Showing google speech input dialog
     private void askSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 						RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-GB");
