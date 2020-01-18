@@ -126,7 +126,7 @@ public class MainActivity extends Activity
 						RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-GB");
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-						"Hi say something");
+						question.getText());
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
         } catch (ActivityNotFoundException a) {
@@ -146,7 +146,17 @@ public class MainActivity extends Activity
 
 						ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-						answerInput.setText(result.get(0));
+							int ii = 0;
+							boolean numberFound = false;
+							while(!numberFound && ii < result.size()){
+								answerInput.setText(result.get(ii));
+								try{
+									Integer.parseInt(answerInput.getText().toString());
+									numberFound = true;
+									}catch(NumberFormatException e){
+										ii++;
+									}
+						}
 						//answerInput.draw();
 						waitABit(500);
 						if(active){
@@ -154,7 +164,7 @@ public class MainActivity extends Activity
 						}
 					}else{
 						if(active){
-						askSpeechInput();
+							askSpeechInput();
 						}
 					}
 					break;
