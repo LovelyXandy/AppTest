@@ -29,6 +29,7 @@ public class MainActivity extends Activity
 	int score = 0;
 	TextToSpeech talker;
 	boolean active;
+	int addScore = 1;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,18 +49,25 @@ public class MainActivity extends Activity
 		
 		button.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
+					if(active){
+						//do nothing - 
+					}else{
+						active= true;
 					talker.setLanguage(Locale.UK);
 					talker.speak("Go", TextToSpeech.QUEUE_ADD, null);
 					active = true;
 					askQuestion();
+					}
 				}
 			});
 			
 		button2.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
+					if(active){
 					talker.setLanguage(Locale.UK);
 					talker.speak("Thanks for playing! Your score was " + score, TextToSpeech.QUEUE_ADD, null);
 					active = false;
+					}
 				}
 			});
     }
@@ -152,10 +160,11 @@ public class MainActivity extends Activity
 	protected void checkAnswer(){
 		try{
 		if (answer== Integer.parseInt(answerInput.getText().toString().replace("—","-").replace(" ",""))){
-		score++;
+		score += addScore;
+		addScore = addScore * 2;
 		talker.speak("Correct! Your score is " + score, TextToSpeech.QUEUE_ADD, null);
 		}else{
-			
+			addScore = 1;
 			talker.speak("Not quite - the correct answer was " + answer, TextToSpeech.QUEUE_ADD, null);
 		}
 		}catch(NumberFormatException e){
