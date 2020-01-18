@@ -54,7 +54,7 @@ public class MainActivity extends Activity
 					}else{
 						active= true;
 					talker.setLanguage(Locale.UK);
-					talker.speak("Go", TextToSpeech.QUEUE_ADD, null);
+					talker.speak("Ready... Steady... Go!", TextToSpeech.QUEUE_ADD, null);
 					active = true;
 					askQuestion();
 					}
@@ -67,6 +67,8 @@ public class MainActivity extends Activity
 					talker.setLanguage(Locale.UK);
 					talker.speak("Thanks for playing! Your score was " + score, TextToSpeech.QUEUE_ADD, null);
 					active = false;
+					score = 0;
+					addScore =1;
 					}
 				}
 			});
@@ -144,7 +146,9 @@ public class MainActivity extends Activity
 						answerInput.setText(result.get(0));
 						//answerInput.draw();
 						waitABit(500);
+						if(active){
 						checkAnswer();
+						}
 					}else{
 						if(active){
 						askSpeechInput();
@@ -165,7 +169,7 @@ public class MainActivity extends Activity
 		talker.speak("Correct! Your score is " + score, TextToSpeech.QUEUE_ADD, null);
 		}else{
 			addScore = 1;
-			talker.speak("Not quite - the correct answer was " + answer, TextToSpeech.QUEUE_ADD, null);
+			talker.speak("Not quite " + question.getText().toString() + " equals " + answer, TextToSpeech.QUEUE_ADD, null);
 		}
 		}catch(NumberFormatException e){
 			//Not a number
