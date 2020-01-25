@@ -15,6 +15,16 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="Stop"/>
+	<CheckBox  
+        android:id="@+id/checkBoxSpeak"  
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:text="Read question?"/> 
+	<CheckBox  
+        android:id="@+id/checkBoxRecog"  
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:text="Speech recognition?"/>  
 	<TextView
 		android:id="@+id/textView1"
 		android:layout_width="wrap_content"
@@ -33,7 +43,13 @@
 			android:layout_height="wrap_content"
 			android:hint="Answer"
 		/>
-
+		
+		<Button
+			android:id="@+id/button3"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Check"
+			android:layout_below="@+id/editAnswer"/>
 		</RelativeLayout>
 
 

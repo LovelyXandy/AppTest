@@ -18,6 +18,8 @@ public class MainActivity extends Activity
 {
 	TextView answerInput;
 	TextView question;
+	CheckBox listenMode;
+	CheckBox speakMode;
 	AlertDialog.Builder builder;
 	private final int REQ_CODE_SPEECH_INPUT = 100;
 	int answer;
@@ -31,47 +33,81 @@ public class MainActivity extends Activity
 	TextToSpeech talker;
 	boolean active;
 	int addScore = 1;
-	
+	Locale myLang = Locale.UK;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		builder = new AlertDialog.Builder(this);  
-		talker = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {public void onInit(int status) {}
-		});
+		talker = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {public void onInit(int status)
+				{}
+			});
 		final Button button = findViewById(R.id.button1);
 		final Button button2 = findViewById(R.id.button2);
+		final Button button3 = findViewById(R.id.button3);
 		answerInput = findViewById(R.id.editAnswer);
 		question = findViewById(R.id.textView1);
-		
 		question.setText("Created");
+		listenMode = findViewById(R.id.checkBoxRecog);
+		speakMode = findViewById(R.id.checkBoxSpeak);
 		//talker.speak("Welcome Sam to the maths quiz, press Go for a question", TextToSpeech.QUEUE_ADD, null);
-		
+
 		button.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					if(active){
+				public void onClick(View v)
+				{
+					if (active)
+					{
 						//do nothing - 
-					}else{
-						active= true;
-					talker.setLanguage(Locale.UK);
-					talker.speak("Ready... Steady... Go!", TextToSpeech.QUEUE_ADD, null);
-					active = true;
-					askQuestion();
+					}
+					else
+					{
+						active = true;
+						if (speakMode.isChecked())
+						{
+							talker.setLanguage(Locale.UK);
+							talker.speak("Ready... Steady... Go!", TextToSpeech.QUEUE_ADD, null);
+						}
+						else
+						{
+							//Should probably have something
+							Toast.makeText(getApplicationContext(),"Ready...Steady...Go!",Toast.LENGTH_SHORT).show();  
+						}  
+						active = true;
+						askQuestion();
 					}
 				}
 			});
-			
+
 		button2.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					if(active){
+				public void onClick(View v)
+				{
+					if (active)
+					{
 						//intent.cancel();
-				    	talker.stop();
-						talker.setLanguage(Locale.UK);
-						talker.speak("Thanks for playing! Your score was " + score, TextToSpeech.QUEUE_FLUSH, null);
-					active = false;
-					score = 0;
-					addScore =1;
+						if (speakMode.isChecked())
+						{
+				    		talker.stop();
+						}
+						say("Thanks for playing! Your score was " + score);	
+						active = false;
+						score = 0;
+						addScore = 1;
+					}
+				}
+			});
+		button3.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v)
+				{
+					if (active && listenMode.isChecked())
+					{
+						checkAnswer();
+						askQuestion();
+					}
+					else
+					{
+						//do nothing
 					}
 				}
 			});
@@ -94,42 +130,60 @@ public class MainActivity extends Activity
 		waitABit(50);
 		talker.speak("Welcome Sam to the maths quiz, press Go for a question", TextToSpeech.QUEUE_FLUSH, null);
 		waitToFinishTalking();
-	
+
 	}
-	
-	private void waitABit(int timeWait){
-		
-		try{
+
+	private void waitABit(int timeWait)
+	{
+
+		try
+		{
 			Thread.sleep(timeWait);
-		}catch(InterruptedException e){}
+		}
+		catch (InterruptedException e)
+		{}
 	}
-	
-	private void waitToFinishTalking(){
-		
-		while(talker.isSpeaking()){
+
+	private void waitToFinishTalking()
+	{
+
+		while (talker.isSpeaking())
+		{
 			waitABit(100);
 		}
 	}
-	
-	private void askQuestion(){
-	
+
+	private void askQuestion()
+	{
+
 		doQuestion();
 		waitToFinishTalking();
-		askSpeechInput();
-		
+		if (listenMode.isChecked())
+		{
+			askSpeechInput();
+		}
+		else
+		{
+
+		}
+
 	}
-	
+
 	// Showing google speech input dialog
-    private void askSpeechInput() {
+    private void askSpeechInput()
+	{
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 						RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-GB");
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
 						question.getText());
-        try {
+        try
+		{
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-        } catch (ActivityNotFoundException a) {
+        }
+		catch (ActivityNotFoundException a)
+		{
 
         }
     }
@@ -137,33 +191,44 @@ public class MainActivity extends Activity
     // Receiving speech input
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
+        switch (requestCode)
+		{
             case REQ_CODE_SPEECH_INPUT: {
-					if (resultCode == RESULT_OK && null != data) {
+					if (resultCode == RESULT_OK && null != data)
+					{
 
 						ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-							int ii = 0;
-							boolean numberFound = false;
-							while(!numberFound && ii < result.size()){
-								answerInput.setText(result.get(ii));
-								try{
-									Integer.parseInt(answerInput.getText().toString());
-									numberFound = true;
-									}catch(NumberFormatException e){
-										ii++;
-									}
+						int ii = 0;
+						boolean numberFound = false;
+						while (!numberFound && ii < result.size())
+						{
+							answerInput.setText(result.get(ii));
+							try
+							{
+								Integer.parseInt(answerInput.getText().toString());
+								numberFound = true;
+							}
+							catch (NumberFormatException e)
+							{
+								ii++;
+							}
 						}
 						//answerInput.draw();
 						waitABit(500);
-						if(active){
-						checkAnswer();
+						if (active)
+						{
+							checkAnswer();
 						}
-					}else{
-						if(active){
+					}
+					else
+					{
+						if (active)
+						{
 							askSpeechInput();
 						}
 					}
@@ -171,41 +236,88 @@ public class MainActivity extends Activity
 				}
 
         }
+
+	}
+
+	protected void checkAnswer()
+	{
+		if (active)
+		{
+			try
+			{
+				if (answer == Integer.parseInt(answerInput.getText().toString().replace("—", "-").replace(" ", "")))
+				{
+					score += addScore;
+					addScore = addScore * 2;
+					if (speakMode.isChecked())
+					{
+						talker.speak("Correct! Your score is " + score, TextToSpeech.QUEUE_ADD, null);
+					}
+					else
+					{}
+				}
+				else
+				{
+					addScore = 1;
+					if (speakMode.isChecked())
+					{
+						talker.speak("Not quite " + question.getText().toString() + " equals " + answer, TextToSpeech.QUEUE_ADD, null);
+					}
+					else
+					{
+						
+					}
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				//Not a number
+				talker.speak("Sorry " + answerInput.getText() + " wasn't recognised as a number.", TextToSpeech.QUEUE_ADD, null); 
+			}
+			waitToFinishTalking();
+			if (active)
+			{askQuestion();}
+		}
+	}
+
+	protected void say(String sayMe){
 		
+		if (speakMode.isChecked())
+		{
+			talker.setLanguage(myLang);
+			talker.speak(sayMe, TextToSpeech.QUEUE_ADD, null);
+		}
+		else
+		{
+			//Should probably have something
+			Toast.makeText(getApplicationContext(),sayMe,Toast.LENGTH_SHORT).show();  
+		}  
 	}
 	
-	protected void checkAnswer(){
-		try{
-		if (answer== Integer.parseInt(answerInput.getText().toString().replace("—","-").replace(" ",""))){
-		score += addScore;
-		addScore = addScore * 2;
-		talker.speak("Correct! Your score is " + score, TextToSpeech.QUEUE_ADD, null);
-		}else{
-			addScore = 1;
-			talker.speak("Not quite " + question.getText().toString() + " equals " + answer, TextToSpeech.QUEUE_ADD, null);
-		}
-		}catch(NumberFormatException e){
-			//Not a number
-			talker.speak("Sorry " + answerInput.getText() + " wasn't recognised as a number.",TextToSpeech.QUEUE_ADD, null); 
-		}
-		waitToFinishTalking();
-		if(active){askQuestion();}
-	}
-	
-	protected void doQuestion(){
-		
+	protected void doQuestion()
+	{
+
 		integer1 = generator.nextInt(maxSize);
 		integer2 = generator.nextInt(maxSize);
 		addition = generator.nextBoolean();
-		
-		if(addition) {
+
+		if (addition)
+		{
 			answer = integer1 + integer2;
-			talker.speak("What is " + integer1 + " plus " + integer2, TextToSpeech.QUEUE_ADD, null);
+			if (speakMode.isChecked())
+			{
+				talker.speak("What is " + integer1 + " plus " + integer2, TextToSpeech.QUEUE_ADD, null);
+			}
 			question.setText("What is " + integer1 + " plus " + integer2);
-		}else{
-			
+		}
+		else
+		{
+
 			answer = integer1 - integer2;
-			talker.speak("What is " + integer1 + " minus " + integer2, TextToSpeech.QUEUE_ADD, null);
+			if (speakMode.isChecked())
+			{
+				talker.speak("What is " + integer1 + " minus " + integer2, TextToSpeech.QUEUE_ADD, null);
+			}
 			question.setText("What is " + integer1 + " minus " + integer2);
 		}
 	}
