@@ -64,16 +64,7 @@ public class MainActivity extends Activity
 					else
 					{
 						active = true;
-						if (speakMode.isChecked())
-						{
-							talker.setLanguage(Locale.UK);
-							talker.speak("Ready... Steady... Go!", TextToSpeech.QUEUE_ADD, null);
-						}
-						else
-						{
-							//Should probably have something
-							Toast.makeText(getApplicationContext(),"Ready...Steady...Go!",Toast.LENGTH_SHORT).show();  
-						}  
+						say("Ready... Steady... Go!");  
 						active = true;
 						askQuestion();
 					}
@@ -100,10 +91,11 @@ public class MainActivity extends Activity
 		button3.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v)
 				{
-					if (active && listenMode.isChecked())
+					if (active && !listenMode.isChecked())
 					{
 						checkAnswer();
 						askQuestion();
+						answerInput.setText("");
 					}
 					else
 					{
@@ -125,11 +117,8 @@ public class MainActivity extends Activity
 	{
 		// TODO: Implement this method
 		super.onStart();
-		talker.setLanguage(Locale.UK);
 		question.setText("Ready");
 		waitABit(50);
-		talker.speak("Welcome Sam to the maths quiz, press Go for a question", TextToSpeech.QUEUE_FLUSH, null);
-		waitToFinishTalking();
 
 	}
 
@@ -249,30 +238,18 @@ public class MainActivity extends Activity
 				{
 					score += addScore;
 					addScore = addScore * 2;
-					if (speakMode.isChecked())
-					{
-						talker.speak("Correct! Your score is " + score, TextToSpeech.QUEUE_ADD, null);
-					}
-					else
-					{}
+					say("Correct! Your score is " + score);
 				}
 				else
 				{
 					addScore = 1;
-					if (speakMode.isChecked())
-					{
-						talker.speak("Not quite " + question.getText().toString() + " equals " + answer, TextToSpeech.QUEUE_ADD, null);
-					}
-					else
-					{
-						
-					}
+					say("Not quite " + question.getText().toString() + " equals " + answer);
 				}
 			}
 			catch (NumberFormatException e)
 			{
 				//Not a number
-				talker.speak("Sorry " + answerInput.getText() + " wasn't recognised as a number.", TextToSpeech.QUEUE_ADD, null); 
+				say("Sorry " + answerInput.getText() + " wasn't recognised as a number."); 
 			}
 			waitToFinishTalking();
 			if (active)
@@ -304,20 +281,14 @@ public class MainActivity extends Activity
 		if (addition)
 		{
 			answer = integer1 + integer2;
-			if (speakMode.isChecked())
-			{
-				talker.speak("What is " + integer1 + " plus " + integer2, TextToSpeech.QUEUE_ADD, null);
-			}
+			say("What is " + integer1 + " plus " + integer2);
 			question.setText("What is " + integer1 + " plus " + integer2);
 		}
 		else
 		{
 
 			answer = integer1 - integer2;
-			if (speakMode.isChecked())
-			{
-				talker.speak("What is " + integer1 + " minus " + integer2, TextToSpeech.QUEUE_ADD, null);
-			}
+			say("What is " + integer1 + " minus " + integer2);
 			question.setText("What is " + integer1 + " minus " + integer2);
 		}
 	}
