@@ -20,19 +20,24 @@ public class MainActivity extends Activity
 	TextView question;
 	CheckBox listenMode;
 	CheckBox speakMode;
+	CheckBox addMode;
+	CheckBox multiMode;
+	TextView maxAddInput;
+	TextView maxMultiInput;
 	AlertDialog.Builder builder;
 	private final int REQ_CODE_SPEECH_INPUT = 100;
 	int answer;
 	int integer1;
 	int integer2;
 	Intent intent;
-	int maxSize = 20;
+	int maxSizeDefault = 20;
 	boolean addition;
+	boolean reverse;
 	Random generator = new Random();
-	int score = 0;
+	long score = 0;
 	TextToSpeech talker;
 	boolean active;
-	int addScore = 1;
+	long addScore = 1;
 	Locale myLang = Locale.UK;
 
     @Override
@@ -52,8 +57,13 @@ public class MainActivity extends Activity
 		question.setText("Created");
 		listenMode = findViewById(R.id.checkBoxRecog);
 		speakMode = findViewById(R.id.checkBoxSpeak);
+		addMode = findViewById(R.id.checkBoxAdd);
+		multiMode = findViewById(R.id.checkBoxMulti);
+		maxAddInput = findViewById(R.id.editMaxAdd);
+		maxMultiInput = findViewById(R.id.editMaxMulti);
 		//talker.speak("Welcome Sam to the maths quiz, press Go for a question", TextToSpeech.QUEUE_ADD, null);
-
+		maxAddInput.setText(Integer.toString(maxSizeDefault));
+		maxMultiInput.setText(Integer.toString(maxSizeDefault/2));
 		button.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v)
 				{
@@ -94,7 +104,7 @@ public class MainActivity extends Activity
 					if (active && !listenMode.isChecked())
 					{
 						checkAnswer();
-						askQuestion();
+						//askQuestion();
 						answerInput.setText("");
 					}
 					else
@@ -273,23 +283,62 @@ public class MainActivity extends Activity
 	
 	protected void doQuestion()
 	{
-
-		integer1 = generator.nextInt(maxSize);
-		integer2 = generator.nextInt(maxSize);
-		addition = generator.nextBoolean();
+		if(addMode.isChecked() && multiMode.isChecked()){
+			addition = generator.nextBoolean();
+		}else{
+			addition = ! multiMode.isChecked();
+		}
+		reverse = generator.nextBoolean();
 
 		if (addition)
 		{
-			answer = integer1 + integer2;
-			say("What is " + integer1 + " plus " + integer2);
-			question.setText("What is " + integer1 + " plus " + integer2);
+			int maxSize = maxSizeDefault;
+			try{
+				maxSize = Integer.parseInt(maxAddInput.getText().toString());
+			}catch(NumberFormatException e)
+			{
+				maxSize = maxSizeDefault;
+			}
+			integer1 = generator.nextInt(maxSize);
+			integer2 = generator.nextInt(maxSize);
+			if(reverse){
+				answer = integer1 - integer2;
+				say("What is " + integer1 + " minus " + integer2);
+				question.setText(integer1 + " minus " + integer2);
+				
+			}else{
+				answer = integer1 + integer2;
+				say("What is " + integer1 + " plus " + integer2);
+				question.setText(integer1 + " plus " + integer2);
+			}
 		}
 		else
 		{
+//multiplication mode
+			
+			int maxSize = maxSizeDefault/2;
+			try{
+				maxSize = Integer.parseInt(maxMultiInput.getText().toString());
+			}catch(NumberFormatException e)
+			{
+				maxSize = maxSizeDefault/2;
+			}
+			integer1 = generator.nextInt(maxSize);
+			integer2 = generator.nextInt(maxSize);
+			if(integer1 * integer2 == 0){
+				integer1 = integer1+1;
+				integer2 = integer2+1;
+			}
+			if(reverse){
+				answer = integer2;
+				say("What is " + integer1 * integer2 + " divided by " + integer1);
+				question.setText(integer1*integer2 + " divided by " + integer1);
 
-			answer = integer1 - integer2;
-			say("What is " + integer1 + " minus " + integer2);
-			question.setText("What is " + integer1 + " minus " + integer2);
-		}
+			}else{
+				answer = integer1 * integer2;
+				say("What is " + integer1 + " times " + integer2);
+				question.setText(integer1 + " times " + integer2);
+			}
+			}
 	}
 }

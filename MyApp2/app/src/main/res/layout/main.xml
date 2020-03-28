@@ -29,28 +29,51 @@
 		android:id="@+id/textView1"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="sample Text"
+		android:text="Question"
 		android:layout_marginTop="15dp"
 		android:textSize="30dp"/>
-
-	<RelativeLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
 
 		<EditText
 			android:id="@+id/editAnswer"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:hint="Answer"
+			android:inputType="number"
 		/>
 		
 		<Button
 			android:id="@+id/button3"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Check"
-			android:layout_below="@+id/editAnswer"/>
-		</RelativeLayout>
-
-
+			android:text="Check"/>
+		
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+		
+	<CheckBox  
+        android:id="@+id/checkBoxAdd"  
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:text="Addition / subtraction?"/>  
+	<EditText
+			android:id="@+id/editMaxAdd"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:inputType="number"
+			android:layout_toRightOf="@+id/checkBoxAdd"/>	
+	<CheckBox  
+        android:id="@+id/checkBoxMulti"  
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:text="Multiplication / Division?"
+		android:layout_toRightOf = "@+id/editMaxAdd"/>  
+	<EditText
+			android:id="@+id/editMaxMulti"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:inputType="number"
+			android:layout_toRightOf="@+id/checkBoxMulti"/>
+	</RelativeLayout>
+	
 </LinearLayout>
